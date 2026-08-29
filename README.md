@@ -13,7 +13,8 @@ semana?") com evidências extraídas dos dados.
 ## Funcionalidades
 
 - **Product Health**: DAU, retenção, conversão e churn com comparação
-  vs. período anterior, e o funil de ativação (User Journey).
+  vs. período anterior, funil de ativação (User Journey) e detecção de
+  anomalias (desvio-padrão sobre a série diária de conversão).
 - **AI Analyst**: pergunte "Por que a conversão caiu esta semana?" e
   receba fator primário, evidências e confiança — calculado de verdade
   a partir do dataset, não uma resposta fixa (ver

@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest'
+import { releaseEvent } from './constants'
+import { getDataset } from './index'
 import {
+  dailyConversionSeries,
+  detectConversionAnomalies,
   funnelStepDropOff,
   percentChange,
   previousRange,
   rangeFromPreset,
   type FunnelTotals,
 } from './selectors'
-import { getDataset } from './index'
 
 describe('rangeFromPreset', () => {
   it('calcula 7d/30d/90d terminando no fim do dataset', () => {
@@ -57,5 +60,46 @@ describe('funnelStepDropOff', () => {
       )
     }
     expect(steps.at(-1)?.retainedFromLandingRate).toBeCloseTo(15)
+  })
+})
+
+describe('dailyConversionSeries', () => {
+  it('cobre todos os dias do dataset em ordem', () => {
+    const dataset = getDataset()
+    const series = dailyConversionSeries(dataset)
+    expect(series.length).toBe(dataset.dailyMetrics.length)
+    for (let i = 1; i < series.length; i++) {
+      expect(series[i].date >= series[i - 1].date).toBe(true)
+    }
+  })
+})
+
+describe('detectConversionAnomalies', () => {
+  it('sinaliza a janela da regressão do Android como anomalia', () => {
+    const dataset = getDataset()
+    const release = releaseEvent()
+    const anomalies = detectConversionAnomalies(dataset, 'android')
+
+    expect(anomalies.length).toBeGreaterThan(0)
+    expect(anomalies.every((a) => a.date >= release.date)).toBe(true)
+    expect(anomalies.every((a) => a.deviationPct < 0)).toBe(true)
+    expect(
+      anomalies.every((a) =>
+        (['warning', 'serious', 'critical'] as const).includes(a.severity),
+      ),
+    ).toBe(true)
+  })
+
+  it('não sinaliza anomalias quando a conversão é idêntica todo dia', () => {
+    const flatFunnelRow = (date: string) => ({
+      date,
+      device: 'android' as const,
+      counts: { landing: 100, signup: 80, onboarding: 60, activated: 30 },
+    })
+    const fakeDataset = {
+      funnel: ['2026-01-01', '2026-01-02', '2026-01-03'].map(flatFunnelRow),
+    } as Parameters<typeof detectConversionAnomalies>[0]
+
+    expect(detectConversionAnomalies(fakeDataset)).toEqual([])
   })
 })

@@ -10,8 +10,8 @@ import {
   previousRange,
   rangeFromPreset,
 } from '@/data/selectors'
+import { formatReleaseDate, formatSignedPercent } from '@/lib/format'
 import { formatDeviceLabel } from '@/lib/text'
-import { formatReleaseDate, formatSignedPercent } from './format'
 import type { AnalystAnswer, AnalyzableMetric, InsightReport } from './types'
 
 const METRIC_KEYWORDS: Record<AnalyzableMetric, string[]> = {

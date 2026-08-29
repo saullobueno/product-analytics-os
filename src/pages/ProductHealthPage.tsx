@@ -1,12 +1,20 @@
 import { StatTile } from '@/components/StatTile'
+import { getDataset } from '@/data'
+import { detectConversionAnomalies } from '@/data/selectors'
 import { FilterBar } from '@/features/filters/FilterBar'
 import { useProductFilters } from '@/features/filters/useProductFilters'
+import { AnomalyList } from '@/features/product-health/AnomalyList'
 import { FunnelJourney } from '@/features/product-health/FunnelJourney'
 import { useHeadlineMetrics } from '@/features/product-health/useHeadlineMetrics'
 
 export function ProductHealthPage() {
   const filters = useProductFilters()
   const metrics = useHeadlineMetrics(filters.range, filters.device)
+  const dataset = getDataset()
+  const anomalies = detectConversionAnomalies(
+    dataset,
+    filters.device === 'all' ? undefined : filters.device,
+  )
 
   return (
     <div className="flex flex-col gap-6">
@@ -41,6 +49,7 @@ export function ProductHealthPage() {
         />
       </div>
 
+      <AnomalyList anomalies={anomalies} />
       <FunnelJourney steps={metrics.funnelSteps} />
     </div>
   )

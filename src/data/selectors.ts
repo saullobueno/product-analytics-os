@@ -156,3 +156,79 @@ export function funnelStepDropOff(totals: FunnelTotals): FunnelStepSummary[] {
     }
   })
 }
+
+export interface DailyConversionPoint {
+  date: string
+  conversionRate: number
+}
+
+/** Conversão (activated/landing) por dia, opcionalmente filtrada por device. */
+export function dailyConversionSeries(
+  dataset: Dataset,
+  device?: DeviceSegment,
+): DailyConversionPoint[] {
+  const rows = dataset.funnel.filter((row) => !device || row.device === device)
+  const byDate = new Map<string, { landing: number; activated: number }>()
+  for (const row of rows) {
+    const entry = byDate.get(row.date) ?? { landing: 0, activated: 0 }
+    entry.landing += row.counts.landing
+    entry.activated += row.counts.activated
+    byDate.set(row.date, entry)
+  }
+  return Array.from(byDate.entries())
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([date, { landing, activated }]) => ({
+      date,
+      conversionRate: landing > 0 ? (activated / landing) * 100 : 0,
+    }))
+}
+
+export type AnomalySeverity = 'warning' | 'serious' | 'critical'
+
+export interface ConversionAnomaly {
+  date: string
+  value: number
+  expected: number
+  deviationPct: number
+  severity: AnomalySeverity
+}
+
+/**
+ * Detecção simples por desvio-padrão: um dia é anomalia se sua
+ * conversão se afasta >= 1.5 desvio-padrão da média da série inteira.
+ * É estatística de verdade sobre o dataset real, não um limiar
+ * hardcoded para "acertar" um dia específico — ver ADR da fase 5.
+ */
+export function detectConversionAnomalies(
+  dataset: Dataset,
+  device?: DeviceSegment,
+): ConversionAnomaly[] {
+  const series = dailyConversionSeries(dataset, device)
+  if (series.length < 2) return []
+
+  const values = series.map((point) => point.conversionRate)
+  const mean = values.reduce((sum, v) => sum + v, 0) / values.length
+  const variance =
+    values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length
+  const stdDev = Math.sqrt(variance)
+  if (stdDev === 0) return []
+
+  return series
+    .map((point) => ({
+      point,
+      zScore: (point.conversionRate - mean) / stdDev,
+    }))
+    .filter(({ zScore }) => Math.abs(zScore) >= 1.5)
+    .map(({ point, zScore }) => ({
+      date: point.date,
+      value: point.conversionRate,
+      expected: mean,
+      deviationPct: percentChange(point.conversionRate, mean) ?? 0,
+      severity:
+        Math.abs(zScore) >= 3
+          ? 'critical'
+          : Math.abs(zScore) >= 2.2
+            ? 'serious'
+            : 'warning',
+    }))
+}
