@@ -97,3 +97,18 @@ de cada uma dessas escolhas.
 - Rotas ficam em `src/app/routes.ts` (`ROUTES` + `NAV_ITEMS`) e
   `src/app/router.tsx` (`routeObjects`, exportado separado do
   `router` do browser para os testes montarem `createMemoryRouter`).
+
+## Filtros de período/segmento (ver ADR 0004)
+
+- Filtro de período/device é **URL state**, não store: usar
+  `useProductFilters()` (`src/features/filters/`) + `<FilterBar />`.
+  Não recriar esse padrão com `useState` local numa página nova que
+  precise dos mesmos filtros.
+- `rangeFromPreset`/`previousRange`/`percentChange`
+  (`src/data/selectors.ts`) são as funções para converter um preset em
+  datas reais e para calcular a variação "vs. período anterior" — é o
+  mesmo mecanismo usado pelos deltas dos `StatTile`.
+- Toda página nova que renderiza conteúdo dentro de `<AppShell/>`
+  (via `useSearchParams`) só funciona dentro de um Router — em teste,
+  montar com `createMemoryRouter` (ver `ProductHealthPage.test.tsx`),
+  nunca `render()` direto sem router.
