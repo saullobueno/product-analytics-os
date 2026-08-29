@@ -1,5 +1,5 @@
-import { PlaceholderPage } from './PlaceholderPage'
+import { AiAnalystChat } from '@/features/ai-analyst/AiAnalystChat'
 
 export function AiAnalystPage() {
-  return <PlaceholderPage title="AI Analyst" />
+  return <AiAnalystChat />
 }

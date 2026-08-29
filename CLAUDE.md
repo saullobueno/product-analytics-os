@@ -112,3 +112,19 @@ de cada uma dessas escolhas.
   (via `useSearchParams`) só funciona dentro de um Router — em teste,
   montar com `createMemoryRouter` (ver `ProductHealthPage.test.tsx`),
   nunca `render()` direto sem router.
+
+## AI Analyst (ver ADR 0005)
+
+- `src/features/ai-analyst/engine.ts` é um motor de regras
+  determinístico, **não uma chamada a LLM real** — a UI diz isso
+  explicitamente ao usuário, não fingir o contrário.
+- Nunca hardcodar a resposta do exemplo do enunciado do produto
+  ("Android -17%, Release 2.4.0..."). O motor tem que calcular esses
+  números a partir do dataset via `src/data/selectors.ts` — se mudar a
+  regressão em `generateFunnel.ts`, a resposta do AI Analyst tem que
+  mudar junto (é isso que `engine.test.ts` verifica).
+- Métrica nova para o AI Analyst responder = 3 passos: (1) adicionar a
+  palavra-chave em `METRIC_KEYWORDS`, (2) escrever uma função
+  `analyzeXxx(dataset, question): InsightReport` usando seletores
+  existentes, (3) plugar no `switch` de `answerQuestion`. Não inventar
+  `primaryFactor` quando não há evidência — deixar `null`.
