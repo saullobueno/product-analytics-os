@@ -44,14 +44,13 @@ npm run dev
 
 ```
 src/
-  app/          shell da aplicação, roteamento, layout
+  app/          shell da aplicação (nav/layout), roteamento
   pages/        páginas por rota
   features/     lógica + componentes por feature de domínio
   components/   design system / componentes de UI compartilhados
-  data/         motor de dados sintéticos (determinístico)
+  data/         motor de dados sintéticos determinístico + seletores
   store/        estado global (Zustand)
-  lib/          utilitários (URL state, formatação)
-  types/        tipos compartilhados
+  lib/          utilitários (PRNG, paleta de cores, formatação)
 ```
 
 ## Status
