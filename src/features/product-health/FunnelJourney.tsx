@@ -7,16 +7,20 @@ const STEP_OPACITY = ['opacity-100', 'opacity-80', 'opacity-60', 'opacity-40']
 
 export interface FunnelJourneyProps {
   steps: FunnelStepSummary[]
+  title?: string
 }
 
 /**
  * Rampa sequencial de um hue só (series-1), escurecendo a cada passo —
  * magnitude decrescente, não identidade categórica (ver skill dataviz).
  */
-export function FunnelJourney({ steps }: FunnelJourneyProps) {
+export function FunnelJourney({
+  steps,
+  title = 'User Journey',
+}: FunnelJourneyProps) {
   return (
     <Card>
-      <h2 className="text-lg font-semibold text-ink">User Journey</h2>
+      <h2 className="text-lg font-semibold text-ink">{title}</h2>
       <ol className="mt-4 flex flex-col gap-1">
         {steps.map((step, index) => (
           <li key={step.id}>

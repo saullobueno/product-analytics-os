@@ -10,7 +10,8 @@ import {
   previousRange,
   rangeFromPreset,
 } from '@/data/selectors'
-import { capitalize, formatReleaseDate, formatSignedPercent } from './format'
+import { formatDeviceLabel } from '@/lib/text'
+import { formatReleaseDate, formatSignedPercent } from './format'
 import type { AnalystAnswer, AnalyzableMetric, InsightReport } from './types'
 
 const METRIC_KEYWORDS: Record<AnalyzableMetric, string[]> = {
@@ -123,7 +124,7 @@ function analyzeConversion(dataset: Dataset, question: string): InsightReport {
   const release = findAlignedRelease(dataset, previous.start, range.end)
 
   const evidence: string[] = [
-    `${capitalize(worstDevice.device)} conversion ${formatSignedPercent(worstDevice.change, 0)}`,
+    `${formatDeviceLabel(worstDevice.device)} conversion ${formatSignedPercent(worstDevice.change, 0)}`,
     `${abandonedAtStep.label} abandonment ${formatSignedPercent(worstStepIncrease * 100, 0)}`,
   ]
   if (release) {
@@ -137,7 +138,7 @@ function analyzeConversion(dataset: Dataset, question: string): InsightReport {
   const primaryFactor =
     release && isMobile
       ? 'Mobile onboarding'
-      : `${abandonedAtStep.label} · ${capitalize(worstDevice.device)}`
+      : `${abandonedAtStep.label} · ${formatDeviceLabel(worstDevice.device)}`
 
   const direction = directionOf(change)
 

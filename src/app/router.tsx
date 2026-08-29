@@ -1,20 +1,22 @@
-import { AiAnalystPage } from '@/pages/AiAnalystPage'
-import { CohortsPage } from '@/pages/CohortsPage'
-import { DashboardsPage } from '@/pages/DashboardsPage'
-import { EventExplorerPage } from '@/pages/EventExplorerPage'
-import { FeatureAdoptionPage } from '@/pages/FeatureAdoptionPage'
-import { FunnelsPage } from '@/pages/FunnelsPage'
-import { ProductHealthPage } from '@/pages/ProductHealthPage'
-import { RealtimePage } from '@/pages/RealtimePage'
-import { RetentionPage } from '@/pages/RetentionPage'
-import { SegmentationPage } from '@/pages/SegmentationPage'
-import { UserJourneyPage } from '@/pages/UserJourneyPage'
 import {
   Navigate,
   createBrowserRouter,
   type RouteObject,
 } from 'react-router-dom'
 import { AppShell } from './AppShell'
+import {
+  AiAnalystPage,
+  CohortsPage,
+  DashboardsPage,
+  EventExplorerPage,
+  FeatureAdoptionPage,
+  FunnelsPage,
+  ProductHealthPage,
+  RealtimePage,
+  RetentionPage,
+  SegmentationPage,
+  UserJourneyPage,
+} from './lazyPages'
 import { ROUTES } from './routes'
 
 export const routeObjects: RouteObject[] = [

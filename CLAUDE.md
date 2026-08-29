@@ -128,3 +128,21 @@ de cada uma dessas escolhas.
   `analyzeXxx(dataset, question): InsightReport` usando seletores
   existentes, (3) plugar no `switch` de `answerQuestion`. Não inventar
   `primaryFactor` quando não há evidência — deixar `null`.
+
+## Code-splitting por rota (gotcha de teste)
+
+- As páginas são `React.lazy` em `src/app/lazyPages.ts` (chunk por rota
+  — ver bundle antes/depois no commit de performance da fase 5).
+  `router.tsx` só monta `routeObjects`; não voltar a importar páginas
+  direto nele (é isso que causava o warning de fast-refresh do oxlint
+  antes dessa separação).
+- **Gotcha**: testes que montam a árvore via `routeObjects` +
+  `createMemoryRouter` (só `src/App.test.tsx` faz isso) esperam um
+  `import()` dinâmico resolver de verdade. Na primeira renderização
+  "fria" — especialmente com vários arquivos de teste rodando em
+  paralelo — isso pode passar bastante do timeout padrão do `findBy*`
+  (1000ms) e do teste (5000ms); por isso esses dois testes usam um
+  timeout explícito bem maior (`LAZY_LOAD_TIMEOUT` em `App.test.tsx`).
+  Testes de página individual (ex.:
+  `ProductHealthPage.test.tsx`) importam o componente direto, não via
+  `lazyPages.ts`, então não sofrem com isso.

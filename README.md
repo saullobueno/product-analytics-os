@@ -10,9 +10,31 @@ semana?") com evidências extraídas dos dados.
 > todo o dataset é sintético e gerado no cliente. Veja
 > [`docs/decisions/0002-dados-100-mockados.md`](docs/decisions/0002-dados-100-mockados.md).
 
+## Funcionalidades
+
+- **Product Health**: DAU, retenção, conversão e churn com comparação
+  vs. período anterior, e o funil de ativação (User Journey).
+- **AI Analyst**: pergunte "Por que a conversão caiu esta semana?" e
+  receba fator primário, evidências e confiança — calculado de verdade
+  a partir do dataset, não uma resposta fixa (ver
+  [ADR 0005](docs/decisions/0005-ai-analyst-motor-de-regras.md)).
+- **Event Explorer**, **Funnels**, **Retention**, **Cohorts** (heatmap),
+  **Segmentation**, **User Journey**, **Feature Adoption**, **Realtime
+  Events** — as demais seções de analytics, todas navegáveis pela
+  sidebar.
+- **Dashboards customizáveis**: widgets em drag/drop (dnd-kit) e
+  relatórios salvos, persistidos em `localStorage`.
+- Filtros de período/device como **URL state**
+  (`?range=30d&device=android`), compartilháveis e persistentes entre
+  reloads.
+
 ## Stack
 
 - [Vite](https://vite.dev) + [React 19](https://react.dev) + TypeScript
+- [React Router](https://reactrouter.com) (data router, páginas com
+  `React.lazy` — ver [ADR 0007](docs/decisions/0007-code-splitting-por-rota.md))
+- [Zustand](https://zustand-demo.pmnd.rs) (tema, dashboard)
+- [Recharts](https://recharts.org) (gráficos) + [dnd-kit](https://dndkit.com) (drag/drop)
 - [oxlint](https://oxc.rs) (lint) + [Prettier](https://prettier.io) (formatação)
 - [Tailwind CSS v4](https://tailwindcss.com)
 - [Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com)
@@ -44,17 +66,29 @@ npm run dev
 
 ```
 src/
-  app/          shell da aplicação (nav/layout), roteamento
-  pages/        páginas por rota
+  app/          shell da aplicação (nav/layout), roteamento, lazyPages.ts
+  pages/        1 componente por rota
   features/     lógica + componentes por feature de domínio
+                (ai-analyst, dashboards, filters, product-health,
+                cohorts, retention, segmentation, events, adoption,
+                realtime, funnels)
   components/   design system / componentes de UI compartilhados
   data/         motor de dados sintéticos determinístico + seletores
   store/        estado global (Zustand)
-  lib/          utilitários (PRNG, paleta de cores, formatação)
+  lib/          utilitários (PRNG, paleta de cores, formatação, cn)
 ```
 
 ## Status
 
-Projeto em construção incremental por fases (scaffold → fundação →
-fluxo principal → AI Analyst → dashboards/polimento). Acompanhe o
-progresso nos commits e nos ADRs em `docs/decisions/`.
+Projeto construído incrementalmente por fases (scaffold → fundação →
+fluxo principal → AI Analyst → dashboards/páginas restantes/polimento).
+Todas as fases estão completas; acompanhe as decisões em
+`docs/decisions/`. Simplificações deliberadas (não são limitações
+técnicas, são escopo de portfólio):
+
+- Sem multiusuário/persistência entre dispositivos — tudo local ao
+  navegador (dataset determinístico + `localStorage`).
+- Widgets do dashboard usam um período fixo (30 dias, todos os
+  devices), independente dos filtros de outras páginas.
+- "Realtime Events" simula um feed ao vivo sobre um snapshot gerado
+  uma vez por sessão, não uma conexão de verdade (não há backend).

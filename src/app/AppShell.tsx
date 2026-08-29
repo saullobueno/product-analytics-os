@@ -1,4 +1,5 @@
 import { Moon, Sun } from 'lucide-react'
+import { Suspense } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { cn } from '@/lib/cn'
 import { useThemeStore } from '@/store/themeStore'
@@ -47,7 +48,13 @@ export function AppShell() {
         </button>
       </aside>
       <main className="flex-1 p-6">
-        <Outlet />
+        <Suspense
+          fallback={
+            <output className="text-sm text-ink-secondary">Carregando…</output>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   )
