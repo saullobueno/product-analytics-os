@@ -1,6 +1,7 @@
 import {
   closestCenter,
   DndContext,
+  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
@@ -9,6 +10,7 @@ import {
 import {
   arrayMove,
   rectSortingStrategy,
+  sortableKeyboardCoordinates,
   SortableContext,
 } from '@dnd-kit/sortable'
 import { X } from 'lucide-react'
@@ -42,8 +44,14 @@ export function DashboardsPage() {
   const metrics = useHeadlineMetrics('30d', 'all')
   const [reportName, setReportName] = useState('')
 
+  // PointerSensor cobre mouse/touch; KeyboardSensor garante que dá pra
+  // reordenar sem mouse (Tab até a alça, Space para pegar, setas para
+  // mover, Space para soltar) — ver skill dataviz / ADR de dashboards.
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   )
 
   function handleDragEnd(event: DragEndEvent) {

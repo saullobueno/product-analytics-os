@@ -3,6 +3,19 @@
 Contexto para agentes trabalhando neste repositório. Veja também
 `README.md` (visão de produto/stack) e `docs/decisions/` (ADRs).
 
+## Workspace de agente
+
+- `.claude/settings.json`: `permissions.ask` força confirmação
+  explícita para comandos destrutivos que não fazem sentido de rotina
+  aqui (force-push, `git reset --hard`, `git clean -f`,
+  `git branch -D`, `rm -rf`) — não bloqueia esses comandos por completo,
+  só evita que rodem sem intenção clara.
+- `.claude/agents/dataviz-a11y-review.md`: subagent para revisar
+  gráficos/UI interativa nova contra a skill `dataviz` e a11y básica —
+  as duas áreas de risco real deste projeto (sem backend, então
+  segurança de endpoint não se aplica). Invocar depois de qualquer
+  gráfico, paleta ou controle interativo novo.
+
 ## Natureza do projeto
 
 Peça de portfólio de front-end. **Não é um produto real**: sem backend,
