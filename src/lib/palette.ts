@@ -14,7 +14,7 @@ export const categorical = [
   { name: 'aqua', light: '#1baf7a', dark: '#199e70' },
   { name: 'yellow', light: '#eda100', dark: '#c98500' },
   { name: 'magenta', light: '#e87ba4', dark: '#d55181' },
-  { name: 'green', light: '#008300', dark: '#008300' },
+  { name: 'green', light: '#008300', dark: '#00b300' },
   { name: 'violet', light: '#4a3aa7', dark: '#9085e9' },
   { name: 'red', light: '#e34948', dark: '#e66767' },
 ] as const
@@ -46,24 +46,37 @@ export const diverging = {
   midpoint: { light: '#f0efec', dark: '#383835' },
 } as const
 
-/** Fixa entre temas — nunca reutilizar para série categórica. */
+/**
+ * `warning`/`serious` são fixas entre temas — nunca reutilizar para
+ * série categórica. `good`/`critical` variam: o dark mode (derivado de
+ * #27272a, mais claro que o preto quase puro de antes) precisa de
+ * tons mais claros para manter contraste ≥4.5:1 (WCAG 1.4.3 — ambos
+ * renderizam como texto real via Badge/StatTile, não só marca
+ * gráfica) contra `chrome.surface.dark` — mesmo tom de vermelho usado
+ * em `chrome.deltaBad.dark`.
+ */
 export const status = {
-  good: '#0ca30c',
+  good: { light: '#0ca30c', dark: '#0eb90e' },
   warning: '#fab219',
   serious: '#ec835a',
-  critical: '#d03b3b',
+  critical: { light: '#d03b3b', dark: '#eb8484' },
 } as const
 
+/**
+ * Escala neutra do dark mode derivada de #27272a (a cor mais escura,
+ * `plane.dark`): mesmo matiz/saturação (HSL 240°, 4%), variando só a
+ * luminosidade — ver comentário equivalente em src/index.css.
+ */
 export const chrome = {
-  surface: { light: '#fcfcfb', dark: '#1a1a19' },
-  plane: { light: '#f9f9f7', dark: '#0d0d0d' },
-  inkPrimary: { light: '#0b0b0b', dark: '#ffffff' },
-  inkSecondary: { light: '#52514e', dark: '#c3c2b7' },
-  inkMuted: { light: '#898781', dark: '#898781' },
-  gridline: { light: '#e1e0d9', dark: '#2c2c2a' },
-  baseline: { light: '#c3c2b7', dark: '#383835' },
-  deltaGood: { light: '#006300', dark: '#0ca30c' },
-  deltaBad: { light: status.critical, dark: '#e66767' },
+  surface: { light: '#fcfcfb', dark: '#333338' },
+  plane: { light: '#f9f9f7', dark: '#27272a' },
+  inkPrimary: { light: '#0b0b0b', dark: '#f8f8f9' },
+  inkSecondary: { light: '#52514e', dark: '#cacace' },
+  inkMuted: { light: '#898781', dark: '#a0a0a7' },
+  gridline: { light: '#e1e0d9', dark: '#45454a' },
+  baseline: { light: '#c3c2b7', dark: '#58585f' },
+  deltaGood: { light: '#006300', dark: status.good.dark },
+  deltaBad: { light: status.critical.light, dark: status.critical.dark },
   border: {
     light: 'rgba(11,11,11,0.10)',
     dark: 'rgba(255,255,255,0.10)',

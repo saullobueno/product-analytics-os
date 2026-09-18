@@ -1,4 +1,5 @@
 export const ROUTES = {
+  login: '/login',
   productHealth: '/product-health',
   events: '/events',
   funnels: '/funnels',

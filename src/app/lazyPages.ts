@@ -2,6 +2,9 @@ import { lazy } from 'react'
 
 // Code-splitting por rota: cada página vira o próprio chunk, carregado
 // só quando o usuário navega até ela (ver ADR de performance da fase 5).
+export const LoginPage = lazy(() =>
+  import('@/pages/LoginPage').then((m) => ({ default: m.LoginPage })),
+)
 export const ProductHealthPage = lazy(() =>
   import('@/pages/ProductHealthPage').then((m) => ({
     default: m.ProductHealthPage,

@@ -5,34 +5,47 @@
  * Tema padrão: dark. Light via [data-theme="light"] no <html>.
  * Manter os hex abaixo em sincronia manual com src/lib/palette.ts —
  * ver ADR 0003.
+ *
+ * Escala neutra do dark mode derivada de #27272a (a cor mais escura,
+ * usada em --color-plane): mesmo matiz/saturação (HSL 240°, 4%),
+ * variando só a luminosidade. --color-critical, --color-good,
+ * --color-delta-good, --color-delta-bad, --color-ink-muted e
+ * --color-series-6 ganham uma variante mais clara aqui porque o
+ * --color-surface novo é mais claro que o #0d0d0d/#1a1a19 de antes —
+ * os valores originais (calibrados para aquele fundo quase-preto)
+ * não garantiam mais contraste suficiente. Como --color-good e
+ * --color-critical também renderizam como texto (Badge/StatTile, não
+ * só marca gráfica de gráfico), a régua é WCAG 1.4.3 (texto normal,
+ * ≥4.5:1), não só 1.4.11 (objeto gráfico, ≥3:1) — os valores originais
+ * voltam no bloco light abaixo, calibrado para um fundo quase-branco.
  */
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
-  --color-surface: #1a1a19;
-  --color-plane: #0d0d0d;
-  --color-ink: #ffffff;
-  --color-ink-secondary: #c3c2b7;
-  --color-ink-muted: #898781;
-  --color-gridline: #2c2c2a;
-  --color-baseline: #383835;
+  --color-surface: #333338;
+  --color-plane: #27272a;
+  --color-ink: #f8f8f9;
+  --color-ink-secondary: #cacace;
+  --color-ink-muted: #a0a0a7;
+  --color-gridline: #45454a;
+  --color-baseline: #58585f;
   --color-border: rgba(255, 255, 255, 0.1);
 
-  --color-delta-good: #0ca30c;
-  --color-delta-bad: #e66767;
+  --color-delta-good: #0eb90e;
+  --color-delta-bad: #eb8484;
 
-  --color-good: #0ca30c;
+  --color-good: #0eb90e;
   --color-warning: #fab219;
   --color-serious: #ec835a;
-  --color-critical: #d03b3b;
+  --color-critical: #eb8484;
 
   --color-series-1: #3987e5;
   --color-series-2: #d95926;
   --color-series-3: #199e70;
   --color-series-4: #c98500;
   --color-series-5: #d55181;
-  --color-series-6: #008300;
+  --color-series-6: #00b300;
   --color-series-7: #9085e9;
   --color-series-8: #e66767;
 }
@@ -49,6 +62,8 @@
 
   --color-delta-good: #006300;
   --color-delta-bad: #d03b3b;
+  --color-good: #0ca30c;
+  --color-critical: #d03b3b;
 
   --color-series-1: #2a78d6;
   --color-series-2: #eb6834;
